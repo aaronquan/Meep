@@ -92,8 +92,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\Coding\C++\DLLs</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -112,8 +113,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\Coding\C++\DLLs</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -132,8 +134,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\Coding\C++\DLLs</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,8 +155,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\Coding\C++\DLLs</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -167,47 +171,73 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\classes\engine.cpp" />
-    <ClCompile Include="src\classes\meep\food.cpp" />
-    <ClCompile Include="src\classes\meep\meep.cpp" />
-    <ClCompile Include="src\classes\shapes\circle.cpp" />
-    <ClCompile Include="src\classes\shapes\square.cpp" />
-    <ClCompile Include="src\classes\shapes\triangle.cpp" />
+    <ClCompile Include="src\engine\engine.cpp" />
+    <ClCompile Include="src\meep\food.cpp" />
+    <ClCompile Include="src\meep\meep.cpp" />
+    <ClCompile Include="src\shapes\circle.cpp" />
+    <ClCompile Include="src\shapes\quad.cpp" />
+    <ClCompile Include="src\shapes\triangle.cpp" />
+    <ClCompile Include="src\classes\status_bar.cpp" />
     <ClCompile Include="src\externals\glad.c" />
-    <ClCompile Include="src\classes\shader\shader.cpp" />
     <ClCompile Include="src\externals\stb_image.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\engine\renderer.cpp" />
+    <ClCompile Include="src\shaders\library.cpp" />
+    <ClCompile Include="src\shaders\shader.cpp" />
+    <ClCompile Include="src\text\text.cpp" />
+    <ClCompile Include="src\utils\colour.cpp" />
+    <ClCompile Include="src\window\interface_window.cpp" />
+    <ClCompile Include="src\window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\classes\math\distances.hpp" />
-    <ClInclude Include="src\classes\shapes\circle.hpp" />
-    <ClInclude Include="src\classes\engine.hpp" />
-    <ClInclude Include="src\classes\entity.hpp" />
-    <ClInclude Include="src\classes\meep\food.hpp" />
-    <ClInclude Include="src\classes\meep\meep.hpp" />
-    <ClInclude Include="src\classes\random.hpp" />
-    <ClInclude Include="src\classes\renderer.hpp" />
-    <ClInclude Include="src\classes\shader\shader.hpp" />
-    <ClInclude Include="src\classes\shapes\general.hpp" />
-    <ClInclude Include="src\classes\shapes\rectangle.hpp" />
-    <ClInclude Include="src\classes\shapes\shapes.hpp" />
-    <ClInclude Include="src\classes\shapes\square.hpp" />
+    <ClInclude Include="src\math\distances.hpp" />
+    <ClInclude Include="src\shapes\circle.hpp" />
+    <ClInclude Include="src\engine\engine.hpp" />
+    <ClInclude Include="src\meep\entity.hpp" />
+    <ClInclude Include="src\meep\food.hpp" />
+    <ClInclude Include="src\meep\meep.hpp" />
+    <ClInclude Include="src\math\random.hpp" />
+    <ClInclude Include="src\engine\renderer.hpp" />
+    <ClInclude Include="src\shapes\general.hpp" />
+    <ClInclude Include="src\shapes\rectangle.hpp" />
+    <ClInclude Include="src\shapes\shapes.hpp" />
+    <ClInclude Include="src\shapes\quad.hpp" />
     <ClInclude Include="src\classes\status_bar.hpp" />
-    <ClInclude Include="src\classes\text.hpp" />
-    <ClInclude Include="src\classes\timer.hpp" />
-    <ClInclude Include="src\classes\shapes\triangle.hpp" />
+    <ClInclude Include="src\utils\timer.hpp" />
+    <ClInclude Include="src\shapes\triangle.hpp" />
+    <ClInclude Include="src\externals\ft2build.h" />
     <ClInclude Include="src\externals\stb_image.h" />
+    <ClInclude Include="src\shaders\library.hpp" />
+    <ClInclude Include="src\shaders\shader.hpp" />
+    <ClInclude Include="src\text\text.hpp" />
+    <ClInclude Include="src\utils\colour.hpp" />
+    <ClInclude Include="src\window\interface_window.hpp" />
+    <ClInclude Include="src\window\window.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\shaders\food_fragment.fs" />
-    <None Include="src\shaders\meep_fragment.fs" />
-    <None Include="src\shaders\solid_colour.fs" />
-    <None Include="src\shaders\text.fs" />
-    <None Include="src\shaders\text.vs" />
-    <None Include="src\shaders\transformation.vs" />
+    <None Include="src\shaders\fragment\basic_phong.frag" />
+    <None Include="src\shaders\fragment\colour.frag" />
+    <None Include="src\shaders\fragment\food_fragment.frag" />
+    <None Include="src\shaders\fragment\green_red_gradient.frag" />
+    <None Include="src\shaders\fragment\grid.frag" />
+    <None Include="src\shaders\fragment\land.frag" />
+    <None Include="src\shaders\fragment\line.frag" />
+    <None Include="src\shaders\fragment\meep_fragment.fs" />
+    <None Include="src\shaders\fragment\plot.frag" />
+    <None Include="src\shaders\fragment\rectangle.frag" />
+    <None Include="src\shaders\fragment\sky.frag" />
+    <None Include="src\shaders\fragment\time.frag" />
+    <None Include="src\shaders\fragment\trip.frag" />
+    <None Include="src\shaders\fragment\white.frag" />
+    <None Include="src\shaders\fragment\outline.frag" />
+    <None Include="src\shaders\vertex\coordinate_2d.vert" />
+    <None Include="src\shaders\vertex\full_screen.vert" />
+    <None Include="src\shaders\vertex\transformation.vert" />
+    <None Include="src\text\shaders\text.frag" />
+    <None Include="src\text\shaders\text.vert" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="src\fonts\arial.ttf" />
+    <Font Include="src\text\fonts\arial.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

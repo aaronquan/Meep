@@ -18,99 +18,149 @@
     <ClCompile Include="src\externals\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\classes\shader\shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\externals\stb_image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\classes\shapes\triangle.cpp">
+    <ClCompile Include="src\shapes\triangle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\classes\shapes\circle.cpp">
+    <ClCompile Include="src\shapes\circle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\classes\shapes\square.cpp">
+    <ClCompile Include="src\shapes\quad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\classes\engine.cpp">
+    <ClCompile Include="src\engine\engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\classes\meep\food.cpp">
+    <ClCompile Include="src\meep\food.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\classes\meep\meep.cpp">
+    <ClCompile Include="src\meep\meep.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\classes\status_bar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\window\interface_window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\window\window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\colour.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\text\text.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shaders\library.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shaders\shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\classes\shader\shader.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\externals\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\classes\shapes\triangle.hpp">
+    <ClInclude Include="src\shapes\triangle.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\classes\renderer.hpp">
+    <ClInclude Include="src\engine\renderer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\classes\engine.hpp">
+    <ClInclude Include="src\engine\engine.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\classes\meep\meep.hpp">
+    <ClInclude Include="src\meep\meep.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\classes\shapes\circle.hpp">
+    <ClInclude Include="src\shapes\circle.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\classes\shapes\general.hpp">
+    <ClInclude Include="src\shapes\general.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\classes\meep\food.hpp">
+    <ClInclude Include="src\meep\food.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\classes\entity.hpp">
+    <ClInclude Include="src\meep\entity.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\classes\timer.hpp">
+    <ClInclude Include="src\utils\timer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\classes\random.hpp">
+    <ClInclude Include="src\math\random.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\classes\shapes\square.hpp">
+    <ClInclude Include="src\shapes\quad.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\classes\shapes\shapes.hpp">
+    <ClInclude Include="src\shapes\shapes.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\classes\shapes\rectangle.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\classes\text.hpp">
+    <ClInclude Include="src\shapes\rectangle.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\classes\status_bar.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\classes\math\distances.hpp">
+    <ClInclude Include="src\math\distances.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\externals\ft2build.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\window\interface_window.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\window\window.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\colour.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\text\text.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\library.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\shader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\shaders\transformation.vs" />
-    <None Include="src\shaders\solid_colour.fs" />
-    <None Include="src\shaders\food_fragment.fs" />
-    <None Include="src\shaders\meep_fragment.fs" />
-    <None Include="src\shaders\text.vs" />
-    <None Include="src\shaders\text.fs" />
+    <None Include="src\shaders\fragment\food_fragment.frag" />
+    <None Include="src\shaders\fragment\meep_fragment.fs" />
+    <None Include="src\shaders\fragment\outline.frag" />
+    <None Include="src\text\shaders\text.frag" />
+    <None Include="src\text\shaders\text.vert" />
+    <None Include="src\shaders\fragment\green_red_gradient.frag" />
+    <None Include="src\shaders\fragment\grid.frag" />
+    <None Include="src\shaders\fragment\land.frag" />
+    <None Include="src\shaders\fragment\line.frag" />
+    <None Include="src\shaders\fragment\colour.frag" />
+    <None Include="src\shaders\fragment\basic_phong.frag" />
+    <None Include="src\shaders\fragment\plot.frag" />
+    <None Include="src\shaders\fragment\rectangle.frag" />
+    <None Include="src\shaders\fragment\sky.frag" />
+    <None Include="src\shaders\fragment\time.frag" />
+    <None Include="src\shaders\fragment\trip.frag" />
+    <None Include="src\shaders\fragment\white.frag" />
+    <None Include="src\shaders\vertex\coordinate_2d.vert" />
+    <None Include="src\shaders\vertex\full_screen.vert" />
+    <None Include="src\shaders\vertex\transformation.vert" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="src\fonts\arial.ttf" />
+    <Font Include="src\text\fonts\arial.ttf" />
   </ItemGroup>
 </Project>

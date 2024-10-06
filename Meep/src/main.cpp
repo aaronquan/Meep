@@ -7,17 +7,23 @@
 
 #include <iostream>
 
-#include "classes/shader/shader.hpp"
-#include "classes/engine.hpp"
-#include "classes/renderer.hpp"
+#include "shaders/shader.hpp"
+#include "engine/engine.hpp"
+#include "engine/renderer.hpp"
 
-#include "classes/text.hpp"
+#include "text/text.hpp"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H  
 
+#include "window/window.hpp"
+
+
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 800;
+
+//Engine engine(SCR_WIDTH, SCR_HEIGHT, 100.0f, 100.0f);
+//Renderer2D renderer(SCR_WIDTH, SCR_HEIGHT);
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -25,23 +31,24 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
 }
-/*
-struct Character {
-    unsigned int TextureID;  // ID handle of the glyph texture
-    glm::ivec2   Size;       // Size of glyph
-    glm::ivec2   Bearing;    // Offset from baseline to left/top of glyph
-    unsigned int Advance;    // Offset to advance to next glyph
-};
 
-std::map<char, Character> Characters;*/
-
-//bool load_characters();
-
-//void RenderText(Shader& s, std::string text, float x, float y, 
-//float scale, glm::vec3 color, unsigned int VAO, unsigned int VBO);
+void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) {
+    float xpos = static_cast<float>(xposIn);
+    float ypos = static_cast<float>(yposIn);
+    //engine.onMouseMove(xpos, ypos);
+}
 
 int main() {
+    Window window;
+    window.create(AppEngine::s_window_dimensions, "Meep");
+    window.useDefaultSizeCallback();
 
+    AppEngine engine;
+
+    window.loop([&]() {
+        
+    });
+    /*
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -63,6 +70,7 @@ int main() {
         return -1;
     }
     glfwMakeContextCurrent(window);
+    glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // glad: load all OpenGL function pointers
@@ -75,40 +83,20 @@ int main() {
 
     int nrAttributes;
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
-        std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
+    std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
     
-    //bool loading = load_characters();
-    //if (loading) {
-       // std::cout << "Loaded Characters" << std::endl;
-    //}
-    /*
-    Shader shader("./src/shaders/text.vs", "./src/shaders/text.fs");
-    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(SCR_WIDTH), 0.0f, static_cast<float>(SCR_HEIGHT));
-    shader.use();
-    shader.setMatrix4("projection", projection);*/
-
-    /*
-    unsigned int VAO, VBO;
-    // configure VAO/VBO for texture quads
-    // -----------------------------------
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);*/
-
+    // configure global opengl state
+    // -----------------------------
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glEnable(GL_STENCIL_TEST);
+    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     float x = 0.0f;
     float y = 0.0f;
     float deltaTime = 0.0f;	// time between current frame and last frame
     float lastFrame = 0.0f;
-
-    Engine engine(SCR_WIDTH, SCR_HEIGHT);
-    Renderer2D renderer;
     
     engine.setup();
     renderer.setup(engine);
@@ -116,6 +104,7 @@ int main() {
 
     while (!glfwWindowShouldClose(window))
     {
+
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
@@ -130,12 +119,12 @@ int main() {
             x += speed;
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         engine.step(deltaTime);
         renderer.render(engine);
 
-        //DrawText::renderText("Hello", 100.0f, 100.0f);
+        DrawText::renderText("Hello", 100.0f, 100.0f);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -143,6 +132,7 @@ int main() {
 
     engine.clean();
     renderer.clean();
-
+    */
     glfwTerminate();
+    
 }
