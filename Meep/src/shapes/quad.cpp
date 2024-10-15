@@ -18,11 +18,11 @@ void Quad::draw(){
 
 void Quad::setup() {
     if (s_is_ready) return;
-    float square_model[] = {
-        -0.5f, -0.5f, 0.0f,  // bottom - left 
-        -0.5f, 0.5f, 0.0f,  // top - left
-        0.5f, 0.5f, 0.0f,  // top - right
-        0.5f, -0.5f, 0.0f,  // bottom - right
+    float quad_data[] = {
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom - left 
+        -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,   // top - left
+        0.5f, 0.5f, 0.0f, 1.0f, 1.0f,  // top - right
+        0.5f, -0.5f, 0.0f, 1.0f, 0.0f // bottom - right
     };
     unsigned int indices[] = {
         0, 1, 2,
@@ -34,13 +34,16 @@ void Quad::setup() {
 
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(square_model), square_model, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quad_data), quad_data, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);	// Vertex attributes stay the same
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);	// Vertex attributes stay the same
     glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));	// Vertex attributes stay the same
+    glEnableVertexAttribArray(1);
 
     s_is_ready = true;
 }

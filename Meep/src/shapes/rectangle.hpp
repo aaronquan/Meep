@@ -1,6 +1,6 @@
 #pragma once
 
-#include "square.hpp"
+#include "quad.hpp"
 
 class Rectangle: public Quad {
 public:
@@ -39,4 +39,5 @@ private:
 	float m_z;
 	float m_width;
 	float m_height;
+	glm::mat4 m_model;
 };

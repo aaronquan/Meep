@@ -21,7 +21,7 @@ void QuadCircle::draw() {
 std::vector<float> QuadCircle::getCircleModel(int count) {
     float angle = 0.0f;
     float angle_increment = 360.0f / count;
-    size_t n_points = count*3;
+    int n_points = count*3;
     std::vector<float> points;
     for (int i = 0; i < count; i++) {
         float x = cos(glm::radians(angle));

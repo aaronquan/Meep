@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-#include "shaders/shader.hpp"
+//#include "shaders/shader.hpp"
 #include "engine/engine.hpp"
 #include "engine/renderer.hpp"
 
@@ -43,10 +43,35 @@ int main() {
     window.create(AppEngine::s_window_dimensions, "Meep");
     window.useDefaultSizeCallback();
 
+    glEnable(GL_BLEND);
+
+    //glEnable(GL_DEPTH_TEST);
+    //glDepthFunc(GL_LESS);
+
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     AppEngine engine;
+    //InterfaceWindow iw(-100, -100, 10000, 10000);
+    //iw.setBackgroundColour(Colour(10, 40, 50));
+    //engine.addWindow(iw);
+
+    AppRenderer renderer;
+
+    float deltaTime = 0.0f;	// time between current frame and last frame
+    float lastFrame = 0.0f;
+
+
 
     window.loop([&]() {
-        
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        engine.update(deltaTime);
+        renderer.renderEngine(engine);
     });
     /*
     // glfw: initialize and configure

@@ -140,7 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\fragment\food_fragment.frag" />
-    <None Include="src\shaders\fragment\meep_fragment.fs" />
+    <None Include="src\shaders\fragment\meep.frag" />
     <None Include="src\shaders\fragment\outline.frag" />
     <None Include="src\text\shaders\text.frag" />
     <None Include="src\text\shaders\text.vert" />
@@ -159,6 +159,7 @@
     <None Include="src\shaders\vertex\coordinate_2d.vert" />
     <None Include="src\shaders\vertex\full_screen.vert" />
     <None Include="src\shaders\vertex\transformation.vert" />
+    <None Include="src\shaders\fragment\circle.frag" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="src\text\fonts\arial.ttf" />

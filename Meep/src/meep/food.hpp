@@ -10,6 +10,11 @@ public:
 	unsigned int getId() const;
 	float getEnergy() const;
 	float getSize() const;
+	float getScale() const;
+	float eaten(float amount); // returns energy
+
+	bool isFinished() const;
+
 	CollisionCircle getCollision() const;
 private:
 	unsigned int m_id;

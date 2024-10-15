@@ -216,13 +216,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\fragment\basic_phong.frag" />
+    <None Include="src\shaders\fragment\circle.frag" />
     <None Include="src\shaders\fragment\colour.frag" />
     <None Include="src\shaders\fragment\food_fragment.frag" />
     <None Include="src\shaders\fragment\green_red_gradient.frag" />
     <None Include="src\shaders\fragment\grid.frag" />
     <None Include="src\shaders\fragment\land.frag" />
     <None Include="src\shaders\fragment\line.frag" />
-    <None Include="src\shaders\fragment\meep_fragment.fs" />
+    <None Include="src\shaders\fragment\meep.frag" />
     <None Include="src\shaders\fragment\plot.frag" />
     <None Include="src\shaders\fragment\rectangle.frag" />
     <None Include="src\shaders\fragment\sky.frag" />

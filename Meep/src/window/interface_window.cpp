@@ -1,7 +1,7 @@
 #include "interface_window.hpp"
 
 InterfaceWindow::InterfaceWindow(int x, int y, int width, int height) :
-    m_position(x, y), m_dims(width, height), m_background_colour(100, 0, 100)
+    m_position(x, y), m_dims(width, height), m_background_colour(0, 0, 0)
 {}
 
 Dimensions InterfaceWindow::getDimensions() const {

@@ -11,26 +11,10 @@
 #include "../window/window.hpp"
 #include "../window/interface_window.hpp"
 
-class AppEngine: public BaseEngine {
+class MeepEngine {
 public:
-	AppEngine();
-	
-	static Dimensions s_window_dimensions;
-
-	std::vector<InterfaceWindow> getWindows() const;
-
-	void onMouseMove(float x, float y);
-	void onMouseLeftClick(float x, float y);
-private:
-	void setupWindows();
-	std::vector<InterfaceWindow> m_windows;
-};
-
-class Engine {
-public:
-	Engine();
-	Engine(unsigned int screen_width, unsigned int screen_height,
-		float engine_width, float engine_height);
+	MeepEngine();
+	MeepEngine(float engine_width, float engine_height);
 	void setup();
 	void clean();
 	void spawnFood();
@@ -44,7 +28,7 @@ public:
 	std::optional<unsigned int> getHoveredMeepId() const;
 
 	void onMouseMove(float x, float y);
-	std::pair<float, float> viewToEnginePoint(float x, float y) const;
+	//std::pair<float, float> viewToEnginePoint(float x, float y) const;
 
 private:
 	std::map<unsigned int, Meep> m_meeps;
@@ -52,8 +36,8 @@ private:
 
 	std::optional<unsigned int> m_hovered_meep_id;
 
-	unsigned int m_view_width;
-	unsigned int m_view_height;
+	//unsigned int m_view_width;
+	//unsigned int m_view_height;
 	float m_width;
 	float m_height;
 
@@ -61,4 +45,30 @@ private:
 	float m_mouse_y;
 
 	Timer m_food_spawn_timer;
+};
+
+class AppEngine : public BaseEngine {
+public:
+	AppEngine();
+
+	static Dimensions s_window_dimensions;
+	static glm::mat4 getFullProjection();
+
+	std::vector<InterfaceWindow> getWindows() const;
+	void addWindow(InterfaceWindow& win);
+
+	const MeepEngine& getMeepEngine() const;
+
+	void update(float dt);
+
+	void onMouseMove(float x, float y);
+	void onMouseLeftClick(float x, float y);
+
+
+
+private:
+	void setupWindows();
+	std::vector<InterfaceWindow> m_windows;
+
+	MeepEngine m_meep_engine;
 };
