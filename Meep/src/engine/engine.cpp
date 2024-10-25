@@ -2,7 +2,7 @@
 
 Dimensions AppEngine::s_window_dimensions(800, 800);
 
-AppEngine::AppEngine(): m_meep_engine(100, 100){
+AppEngine::AppEngine(): m_meep_engine(100, 100), m_meep_window(), m_information_window(){
 	setupWindows();
 	m_meep_engine.setup();
 };
@@ -20,13 +20,34 @@ glm::mat4 AppEngine::getFullProjection() {
 
 void AppEngine::setupWindows() {
 	//InterfaceWindow win1(10, 25, s_window_dimensions.width-50, s_window_dimensions.height - 50);
-	InterfaceWindow win1(100, 50, 600, 600);
+	InterfaceWindow win1(10, 10, 100, 100);
 	win1.setBackgroundColour(Colour(10, 140, 100));
 	m_windows.push_back(win1);
+
+	m_meep_window.setDimensions(
+		AppEngine::s_window_dimensions.width-200, 
+		AppEngine::s_window_dimensions.height-200
+	);
+	m_meep_window.setPosition(
+		50, 50
+	);
+	m_meep_window.setBackgroundColour(Colour(50, 255, 50));
+
+	m_information_window.setDimensions(200, 100);
+	m_information_window.setPosition(200, AppEngine::s_window_dimensions.height - 150);
+	m_information_window.setBackgroundColour(Colour(255, 50, 50));
 }
 
 std::vector<InterfaceWindow> AppEngine::getWindows() const{
 	return m_windows;
+}
+
+const InterfaceWindow& AppEngine::getMeepWindow() const {
+	return m_meep_window;
+}
+
+const InterfaceWindow& AppEngine::getInformationWindow() const {
+	return m_information_window;
 }
 
 void AppEngine::addWindow(InterfaceWindow& win) {
@@ -42,6 +63,22 @@ void AppEngine::update(float dt) {
 }
 
 void AppEngine::onMouseMove(float x, float y) {
+	Position mouse = Position(x, y);
+	m_mouse = mouse;
+	if (m_meep_window.isInside(mouse)) {
+		Position relative = m_meep_window.getRelativePosition(mouse);
+		//std::cout << relative.x << ' ' << relative.y << std::endl;
+
+		Dimensions meep_window_dimensions = m_meep_window.getDimensions();
+
+		float width = m_meep_engine.getWidth();
+		float height = m_meep_engine.getHeight();
+
+		float width_ratio = width/static_cast<float>(meep_window_dimensions.width);
+		float height_ratio = width/static_cast<float>(meep_window_dimensions.height);
+
+		std::cout << relative.x*width_ratio << ' ' << relative.y*height_ratio << std::endl;
+	}
 
 }
 
@@ -59,9 +96,9 @@ m_mouse_x(0), m_mouse_y(0)
 {};
 
 void MeepEngine::setup() {
-	Meep m(2.0f, 10.0f, MeepStage::Adult);
-	m.setPosition(m_width/2, m_height/2);
-	m_meeps[m.getId()] = m;
+	Meep* m = new Meep(3.0f, 10.0f, MeepStage::Adult);
+	m->setPosition(m_width/2, m_height/2);
+	m_meeps[m->getId()] = m;
 	//Meep m2;
 	//m2.setPosition(m_width / 2 + 20, m_height / 2 + 20);
 	//m_meeps[m2.getId()] = m2;
@@ -86,31 +123,31 @@ void MeepEngine::step(float dt) {
 	std::vector<unsigned int> dead_m_meeps;
 	m_hovered_meep_id = std::nullopt;
 	for (auto& [meep_id, meep] : m_meeps) {
-		MeepStateChangeData state_change_data = meep.updateState();
+		MeepStateChangeData state_change_data = meep->updateState();
 		if (state_change_data.clone_meep != nullptr) {
 			Meep* clone = state_change_data.clone_meep;
-			clone->setPosition(meep.getX() + meep.getSize(), meep.getY() + meep.getSize());
-			m_meeps[clone->getId()] = *clone;
+			clone->setPosition(meep->getX() + meep->getSize(), meep->getY() + meep->getSize());
+			m_meeps[clone->getId()] = clone;
 			std::cout << "cloning" << std::endl;
 		}
 
 
-		MeepState meep_state = meep.getState();
+		MeepState meep_state = meep->getState();
 
-		meep.moveToClosestFood(m_foods);
+		//meep->moveToClosestFood(m_foods);
 
-		meep.step(dt);
+		meep->step(dt);
 		if (meep_state == MeepState::Dead) {
 			dead_m_meeps.push_back(meep_id);
 		}
 
 		//check mouse hover
-		if (meep.collidePoint(m_mouse_x, m_mouse_y)) {
+		if (meep->collidePoint(m_mouse_x, m_mouse_y)) {
 			m_hovered_meep_id = meep_id;
 		}
 
 		//check collisions
-		std::vector<unsigned int> collide_food_ids = meep.collideFood(m_foods, dt);
+		std::vector<unsigned int> collide_food_ids = meep->collideFood(m_foods, dt);
 		for (unsigned int i : collide_food_ids) {
 			m_foods.erase(i);
 		}
@@ -120,7 +157,7 @@ void MeepEngine::step(float dt) {
 	}
 }
 
-std::map<unsigned int, Meep> MeepEngine::getMeeps() const {
+std::map<unsigned int, Meep*> MeepEngine::getMeeps() const {
 	return m_meeps;
 }
 

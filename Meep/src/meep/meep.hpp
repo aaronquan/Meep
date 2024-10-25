@@ -2,10 +2,13 @@
 #include <iostream>
 #include <optional>
 #include <map>
+#include <unordered_set>
 
 #include "entity.hpp"
-#include "./../shapes/shapes.hpp"
 #include "food.hpp"
+
+#include "./../math/map.hpp"
+#include "./../shapes/shapes.hpp"
 #include "./../math/distances.hpp"
 
 enum class MeepStage {
@@ -66,6 +69,8 @@ private:
 	MeepState m_state;
 	CollisionCircle m_collision;
 
+	MapPosition* m_target_food;
+
 	float m_speed;
 	float m_vx;
 	float m_vy;
@@ -96,7 +101,8 @@ private:
 	static float movement_energy_drain;
 
 	static float child_size;
-
+	static float spawn_size;
+	static std::unordered_set<unsigned int> reserved_food;
 };
 
 class RotationMeep : public Meep {

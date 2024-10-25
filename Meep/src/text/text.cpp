@@ -116,10 +116,9 @@ bool DrawText::loadCharacters() {
     return true;
 }
 
+//void DrawText::
+
 void DrawText::renderText(std::string text, float x, float y, float scale, Colour col) {
-    if (!s_is_ready) {
-        
-    }
     if (s_is_ready) {
         glEnable(GL_CULL_FACE);
         glEnable(GL_BLEND);
@@ -170,5 +169,8 @@ void DrawText::renderText(std::string text, float x, float y, float scale, Colou
 
         glDisable(GL_CULL_FACE);
         glDisable(GL_BLEND);
+    }
+    else {
+        std::cout << "Text is not setup" << std::endl;
     }
 }

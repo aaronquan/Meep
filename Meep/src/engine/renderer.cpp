@@ -8,29 +8,41 @@ m_canvas_projection(AppEngine::getFullProjection())
 };
 
 void AppRenderer::renderEngine(AppEngine& engine) {
-	
-	std::vector<InterfaceWindow> windows = engine.getWindows();
+	renderEngineWindows(engine);
+	m_meep_renderer.renderMeepEngine(engine.getMeepEngine(), engine.getMeepWindow());
 
+	const InterfaceWindow& information = engine.getInformationWindow();
+	Position p = information.getPosition();
+
+	DrawText::renderText("here", p.x, AppEngine::s_window_dimensions.width - p.y);
+}
+
+void AppRenderer::renderEngineWindows(AppEngine& engine) {
 	m_colour_shader.use();
 	glm::mat4 projection = AppEngine::getFullProjection();
 	m_colour_shader.setProjection(projection);
-	for (InterfaceWindow &iw : windows) {
-		Colour c = iw.getBackgroundColour();
-		m_colour_shader.setVec3("colour", c.toVec3());
-
-		Dimensions dims = iw.getDimensions();
-		Position pos = iw.getPosition();
-		glm::mat4 model(1.0f);
-		model = glm::translate(model, glm::vec3(pos.x + dims.width / 2.0f, pos.y + dims.height / 2.0f, 0));
-		model = glm::scale(model, glm::vec3(dims.width, dims.height, 1));
-		m_colour_shader.setModel(model);
-		Quad::draw();
-
+	std::vector<InterfaceWindow> windows = engine.getWindows();
+	for (const InterfaceWindow& iw : windows) {
+		renderWindow(iw);
 	}
-	if (windows.size() > 0) {
-		//m_meep_renderer.renderTest(windows[0]);
-		m_meep_renderer.renderMeepEngine(engine.getMeepEngine(), windows[0]);
-	}
+
+	renderWindow(engine.getMeepWindow());
+	renderWindow(engine.getInformationWindow());
+}
+
+void AppRenderer::renderWindow(const InterfaceWindow& window) {
+	m_colour_shader.use();
+	Colour c = window.getBackgroundColour();
+	m_colour_shader.setVec3("colour", c.toVec3());
+
+	Dimensions dims = window.getDimensions();
+	Position pos = window.getPosition();
+	glm::mat4 model(1.0f);
+	model = glm::translate(model, glm::vec3(pos.x + dims.width / 2.0f, pos.y + dims.height / 2.0f, 0));
+	model = glm::scale(model, glm::vec3(dims.width, dims.height, 1));
+	m_colour_shader.setModel(model);
+	Quad::draw();
+
 
 }
 
@@ -42,6 +54,8 @@ void AppRenderer::setupShaders() {
 	m_colour_shader.setModel(identity);
 	m_colour_shader.setView(identity);
 	m_colour_shader.setProjection(identity);
+
+
 }
 
 MeepRenderer::MeepRenderer(){
@@ -70,7 +84,7 @@ void MeepRenderer::setCoordinateShader(ShaderLibrary::CoordinateShader& shader) 
 	shader.setProjection(identity);
 }
 
-void MeepRenderer::setShaderViewProjection(const MeepEngine& engine, InterfaceWindow& window) {
+void MeepRenderer::setShaderViewProjection(const MeepEngine& engine, const InterfaceWindow& window) {
 	Position pos = window.getPosition();
 	Dimensions dims = window.getDimensions();
 	float zoom = 1.0f;
@@ -106,13 +120,13 @@ void MeepRenderer::setShaderViewProjection(const MeepEngine& engine, InterfaceWi
 	m_colour_shader.setView(view);
 }
 
-void MeepRenderer::renderMeepEngine(const MeepEngine& engine, InterfaceWindow& window) {
+void MeepRenderer::renderMeepEngine(const MeepEngine& engine, const InterfaceWindow& window) {
 	setShaderViewProjection(engine, window);
 
 	Position pos = window.getPosition();
 	Dimensions dims = window.getDimensions();
 
-	std::map<unsigned int, Meep> meeps = engine.getMeeps();
+	std::map<unsigned int, Meep*> meeps = engine.getMeeps();
 	glScissor(pos.x, AppEngine::s_window_dimensions.height - dims.height - pos.y, dims.width, dims.height); // y - accounts for y starting at bottom
 	glEnable(GL_SCISSOR_TEST);
 
@@ -134,15 +148,15 @@ void MeepRenderer::renderMeepEngine(const MeepEngine& engine, InterfaceWindow& w
 	glDisable(GL_SCISSOR_TEST);
 }
 
-void MeepRenderer::renderMeeps(std::map<unsigned int, Meep>& meeps) {
+void MeepRenderer::renderMeeps(std::map<unsigned int, Meep*>& meeps) {
 	m_meep_shader.use();
 	for (auto const& [id, meep] : meeps) {
-		float scale = meep.getScale();
-		float rotation = meep.getRotation();
+		float scale = meep->getScale();
+		float rotation = meep->getRotation();
 		m_meep_shader.setFloat("rotation", rotation);
 		//m_meep_shader.setVec2("direction", glm::vec2(meep.getDirection()));
 		glm::mat4 model(1.0f);
-		model = glm::translate(model, glm::vec3(meep.getX(), meep.getY(), 0.1));
+		model = glm::translate(model, glm::vec3(meep->getX(), meep->getY(), 0.1));
 		model = glm::scale(model, glm::vec3(scale, scale, 1));
 		m_meep_shader.setModel(model);
 		Quad::draw();
@@ -217,8 +231,8 @@ void Renderer2D::render(MeepEngine eng) {
 	m_colour_shader.use();
 	m_colour_shader.setMat4("projection", m_engine_projection);
 	m_colour_shader.setVec3("colour", colour);
-
-	std::map<unsigned int, Meep> meeps = eng.getMeeps();
+	/*
+	std::map<unsigned int, Meep*> meeps = eng->getMeeps();
 	std::optional<unsigned int> hovered_meep_id = eng.getHoveredMeepId();
 	for (auto const& [id, meep] : meeps) {
 		if (!(hovered_meep_id.has_value() && hovered_meep_id.value() == id)) {
@@ -227,7 +241,7 @@ void Renderer2D::render(MeepEngine eng) {
 	}
 	if (hovered_meep_id.has_value()) {
 		renderMeepOutline(meeps.find(hovered_meep_id.value())->second);
-	}
+	}*/
 
 	m_colour_shader.use();
 	m_colour_shader.setVec3("colour", colour);
@@ -238,7 +252,7 @@ void Renderer2D::render(MeepEngine eng) {
 		circ.draw();
 	}
 
-	if (meeps.find(0) != meeps.end()) {
+	//if (meeps.find(0) != meeps.end()) {
 		//Meep& meep = meeps[0];
 		//float energy = meep.getEnergy();
 		//float max_energy = meep.getMaxEnergy();
@@ -249,7 +263,7 @@ void Renderer2D::render(MeepEngine eng) {
 		//sb.setStatusValue(energy_ratio);
 		//sb.draw(m_colour_shader);
 
-	}
+	//}
 
 };
 

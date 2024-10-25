@@ -191,6 +191,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\distances.hpp" />
+    <ClInclude Include="src\math\map.hpp" />
     <ClInclude Include="src\shapes\circle.hpp" />
     <ClInclude Include="src\engine\engine.hpp" />
     <ClInclude Include="src\meep\entity.hpp" />

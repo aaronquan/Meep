@@ -6,7 +6,9 @@ float Meep::sense_radius = 200.0f;
 float Meep::passive_energy_drain = 0.1f;
 float Meep::movement_energy_drain = 0.01f;
 
-float Meep::child_size = 3.0f;
+float Meep::spawn_size = 0.5f;
+float Meep::child_size = 2.0f;
+std::unordered_set<unsigned int> Meep::reserved_food;
 
 Meep::Meep() : Meep(4.0f, 20.0f, MeepStage::Cloning) {};
 Meep::Meep(float speed): Meep(1.0f, speed, MeepStage::Cloning) {};
@@ -22,7 +24,8 @@ Meep::Meep(float size, float speed, MeepStage stage)
 	m_energy_recovery_modifier(1.0f),
 	m_age(0),
 	m_collision(0, 0, size),
-	m_children()
+	m_children(),
+	m_target_food(nullptr)
 {
 	next_id++;
 };
@@ -53,6 +56,7 @@ void Meep::step(float dt) {
 				m->setSize(m->getSize()+change);
 				if (m->getSize() > child_size) {
 					m->growUp();
+					m_state = MeepState::Stable;
 				}
 			}
 		}
@@ -83,7 +87,7 @@ MeepStateChangeData Meep::updateState() {
 		if (m_stage == MeepStage::Adult && m_energy > m_max_energy*0.6) {
 			m_state = MeepState::Cloning;
 			m_energy -= m_max_energy*0.25f;
-			data.clone_meep = new Meep(0.5, 1.0, MeepStage::Cloning);
+			data.clone_meep = new Meep(spawn_size, m_speed, MeepStage::Cloning);
 			m_children.push_back(data.clone_meep);
 		}
 		else if (m_energy < m_max_energy*0.8) {
@@ -144,10 +148,12 @@ std::optional<Food> Meep::closestFood(std::map<unsigned int, Food>& foods) {
 	std::map<unsigned int, Food>::iterator it;
 	for (it = foods.begin(); it != foods.end(); it++) {
 		Food food = it->second;
-		float distance = getDistanceSquaredTo(food.getX(), food.getY());
-		if (distance < closest) {
-			closest = distance;
-			closest_food = food;
+		if(reserved_food.find(food.getId()) == reserved_food.end()){
+			float distance = getDistanceSquaredTo(food.getX(), food.getY());
+			if (distance < closest) {
+				closest = distance;
+				closest_food = food;
+			}
 		}
 	}
 	return closest_food;
@@ -168,6 +174,8 @@ void Meep::moveToClosestFood(std::map<unsigned int, Food>& foods) {
 				m_vy = dy / dist;
 				m_rotation = atan2(m_vy, m_vx);
 				m_state = MeepState::MovingToFood;
+				m_target_food = new MapPosition(closest_food.getX(), closest_food.getY());
+				reserved_food.insert(closest_food.getId());
 			}
 			else {
 				m_vx = 0;
@@ -218,6 +226,7 @@ std::vector<unsigned int> Meep::collideFood(std::map<unsigned int, Food>& foods,
 				eating = true;
 			}
 			if (food.isFinished()) {
+				delete m_target_food;
 				collision_food_ids.push_back(food_id);
 			}
 		}
