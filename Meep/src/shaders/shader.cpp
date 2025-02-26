@@ -77,7 +77,7 @@ namespace Shader {
 		glUniform4f(getUniform(name), v.x, v.y, v.z, v.w);
 	}
 
-	void MainShader::setMat4(const char* name, glm::mat4 m) const {
+	void MainShader::setMat4(const char* name, const glm::mat4& m) const {
 		glUniformMatrix4fv(getUniform(name), 1, GL_FALSE, &m[0][0]);
 	}
 

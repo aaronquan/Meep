@@ -29,6 +29,7 @@ struct MeepStateChangeData {
 class Meep : public Entity2D {
 public:
 	Meep();
+	Meep(Meep* parent);
 	Meep(float speed);
 	Meep(float size, float speed, MeepStage stage);
 	void step(float dt);
@@ -46,21 +47,32 @@ public:
 	float getEnergyRatio() const;
 	float getSize() const;
 	float getScale() const;
+	float getSpeed() const;
+
 	glm::vec2 getDirection() const;
 
+	MapPosition* getTarget() const;
+
 	float getRotation() const;
+
+	//void setRotation();
+
+	void setVelocity(float x, float y);
+	void setEating();
 
 	unsigned int getId() const;
 
 	float getDistanceSquaredTo(float x, float y);
 
-	void moveToClosestFood(std::map<unsigned int, Food>& foods);
+	//void moveToClosestFood(std::map<unsigned int, Food*>& foods);
 
 	CollisionCircle getCollision() const;
-	bool collideFood(Food const &food) const;
-	bool collidePoint(float x, float y) const;
+	bool isCollisionFood(Food const &food) const;
+	bool isCollisionPoint(float x, float y) const;
 	bool eatFood(Food &food, float dt);
-	std::vector<unsigned int> collideFood(std::map<unsigned int, Food> &foods, float dt);
+	std::vector<unsigned int> collideFood(std::map<unsigned int, Food*> &foods, float dt);
+
+	static void setTargetFood(Meep& meep, std::map<unsigned int, Food*>& foods);
 
 private:
 	unsigned int m_id;
@@ -69,7 +81,8 @@ private:
 	MeepState m_state;
 	CollisionCircle m_collision;
 
-	MapPosition* m_target_food;
+	MapPosition* m_target;
+	MapPosition m_position;
 
 	float m_speed;
 	float m_vx;
@@ -89,11 +102,14 @@ private:
 	float m_energy_recovery_modifier;
 
 	std::vector<Meep*> m_children;
+	Meep* m_parent;
 
-	std::optional<Food> closestFood(std::map<unsigned int, Food>& foods);
+	std::optional<Food> getClosestFood(std::map<unsigned int, Food*>& foods);
 
 	void move(float x, float y);
 	void setSize(float size);
+	void setTarget(float x, float y);
+	void setNoTarget();
 	
 	static unsigned int next_id;
 	static float sense_radius;
@@ -111,3 +127,5 @@ public:
 private:
 	float m_rotation_energy_drain;
 };
+
+std::string meepStateToString(MeepState state);

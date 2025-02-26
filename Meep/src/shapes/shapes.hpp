@@ -4,3 +4,4 @@
 #include "circle.hpp"
 #include "quad.hpp"
 #include "rectangle.hpp"
+#include "line.hpp"

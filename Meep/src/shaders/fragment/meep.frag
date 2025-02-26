@@ -23,5 +23,6 @@ void main()
 
     float circ = circle(position, vec2(0.5), 1.0);
     vec3 colour = vec3(0.6, 0.2, 0.3)*circ2+vec3(0.3, 0.4, 1)*circ;
+    if(circ+circ2 < 0.1) discard;
 	FragColor = vec4(vec3(colour), circ+circ2);
 }

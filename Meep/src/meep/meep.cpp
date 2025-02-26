@@ -11,9 +11,11 @@ float Meep::child_size = 2.0f;
 std::unordered_set<unsigned int> Meep::reserved_food;
 
 Meep::Meep() : Meep(4.0f, 20.0f, MeepStage::Cloning) {};
+Meep::Meep(Meep* parent) : Meep() {};
 Meep::Meep(float speed): Meep(1.0f, speed, MeepStage::Cloning) {};
-Meep::Meep(float size, float speed, MeepStage stage) 
-	: m_id(next_id),
+Meep::Meep(float size, float speed, MeepStage stage)
+	: Entity2D(0, 0),
+	m_id(next_id),
 	m_stage(stage),
 	m_state(MeepState::Stable), m_speed(speed),
 	m_vx(0), m_vy(0),
@@ -25,7 +27,8 @@ Meep::Meep(float size, float speed, MeepStage stage)
 	m_age(0),
 	m_collision(0, 0, size),
 	m_children(),
-	m_target_food(nullptr)
+	m_target(nullptr),
+	m_parent(nullptr)
 {
 	next_id++;
 };
@@ -33,26 +36,28 @@ Meep::Meep(float size, float speed, MeepStage stage)
 void Meep::step(float dt) {
 	float move_x = 0;
 	float move_y = 0;
-	if(m_stage != MeepStage::Cloning){
+	//std::cout << getX() << " " << getY() << std::endl;
+	if(!(m_stage == MeepStage::Cloning || m_state == MeepState::Cloning)){
 		move_x = dt * m_vx * m_speed;
 		move_y = dt * m_vy * m_speed;
 		move(move_x, move_y);
 	}
-
 	float movement_sq = move_x * move_x + move_y * move_y;
 
-	//if (m_energy >= m_max_energy*0.75) {
-	//	m_energy -= 2;
-	//	setSize(m_size*1.1);
-	//}
 	m_energy -= dt * passive_energy_drain + movement_sq * movement_energy_drain;
+
+	//meep growth
+	if (m_energy > m_max_energy * 0.6) {
+		m_energy -= 0.1 * dt;
+		m_size += 0.1 * dt;
+	}
 
 	if (m_state == MeepState::Cloning) {
 		for (Meep* m : m_children) {
 			if(m->isCloningStage()){
 				float change = 0.1*dt;
 				setSize(getSize()-change);
-				std::cout << m->getSize() + change << std::endl;
+				//std::cout << m->getSize() + change << std::endl;
 				m->setSize(m->getSize()+change);
 				if (m->getSize() > child_size) {
 					m->growUp();
@@ -84,7 +89,7 @@ MeepStateChangeData Meep::updateState() {
 	MeepStateChangeData data = MeepStateChangeData();
 	//std::cout << m_energy << std::endl;
 	if (m_state == MeepState::Stable) {
-		if (m_stage == MeepStage::Adult && m_energy > m_max_energy*0.6) {
+		if (m_stage == MeepStage::Adult && m_energy > m_max_energy*0.6 && m_size > child_size*2) {
 			m_state = MeepState::Cloning;
 			m_energy -= m_max_energy*0.25f;
 			data.clone_meep = new Meep(spawn_size, m_speed, MeepStage::Cloning);
@@ -92,8 +97,10 @@ MeepStateChangeData Meep::updateState() {
 		}
 		else if (m_energy < m_max_energy*0.8) {
 			m_state = MeepState::LookingForFood;
+
 		}
 	}
+	//std::cout << meepStateToString(m_state) << std::endl;
 
 	if (m_energy < 0) {
 		m_state = MeepState::Dead;
@@ -124,6 +131,10 @@ float Meep::getScale() const {
 	return m_size*2;
 }
 
+float Meep::getSpeed() const {
+	return m_speed;
+}
+
 float Meep::getRotation() const {
 	return m_rotation;
 }
@@ -132,40 +143,36 @@ glm::vec2 Meep::getDirection() const {
 	return glm::vec2(m_vx, m_vy);
 }
 
+MapPosition* Meep::getTarget() const {
+	return m_target;
+}
+
+
 unsigned int Meep::getId() const {
 	return m_id;
 }
+
+void Meep::setVelocity(float x, float y) {
+	m_vx = x; m_vy = y;
+}
+
+void Meep::setEating() {
+	m_state = MeepState::Eating;
+}
+
 float Meep::getDistanceSquaredTo(float x, float y) {
-	return Distances::pointToPointDistanceSquaredFloat(x, y, m_x, m_y);
-	//float dx = x - m_x;
-	//float dy = y - m_y;
-	//return dx * dx + dy * dy;
+	return Distances::pointToPointDistanceSquaredFloat(x, y, getX(), getY());
 }
 
-std::optional<Food> Meep::closestFood(std::map<unsigned int, Food>& foods) {
-	float closest = sense_radius * sense_radius;
-	std::optional<Food> closest_food = std::nullopt;
-	std::map<unsigned int, Food>::iterator it;
-	for (it = foods.begin(); it != foods.end(); it++) {
-		Food food = it->second;
-		if(reserved_food.find(food.getId()) == reserved_food.end()){
-			float distance = getDistanceSquaredTo(food.getX(), food.getY());
-			if (distance < closest) {
-				closest = distance;
-				closest_food = food;
-			}
-		}
-	}
-	return closest_food;
-}
-
-void Meep::moveToClosestFood(std::map<unsigned int, Food>& foods) {
-	if (m_state == MeepState::LookingForFood || m_state == MeepState::MovingToFood) {
-		std::optional<Food> closest = closestFood(foods);
+//to be unused
+/*
+void Meep::moveToClosestFood(std::map<unsigned int, Food*>& foods) {
+	if (m_state == MeepState::LookingForFood) {
+		std::optional<Food> closest = getClosestFood(foods);
 		if (closest.has_value()) {
 			Food closest_food = closest.value();
-			float dx = closest_food.getX() - m_x;
-			float dy = closest_food.getY() - m_y;
+			float dx = closest_food.getX() - getX();
+			float dy = closest_food.getY() - getY();
 			float dist_sq = getDistanceSquaredTo(closest_food.getX(), closest_food.getY());
 			float dist = sqrt(dist_sq);
 			if (dist_sq > m_size*m_size) {
@@ -174,7 +181,7 @@ void Meep::moveToClosestFood(std::map<unsigned int, Food>& foods) {
 				m_vy = dy / dist;
 				m_rotation = atan2(m_vy, m_vx);
 				m_state = MeepState::MovingToFood;
-				m_target_food = new MapPosition(closest_food.getX(), closest_food.getY());
+				setTarget(closest_food.getX(), closest_food.getY());
 				reserved_food.insert(closest_food.getId());
 			}
 			else {
@@ -185,15 +192,15 @@ void Meep::moveToClosestFood(std::map<unsigned int, Food>& foods) {
 			//m_state = MovingToFood;
 		}
 	}
-}
+}*/
 
 CollisionCircle Meep::getCollision() const {
 	return m_collision;
 }
-bool Meep::collideFood(Food const& food) const {
+bool Meep::isCollisionFood(Food const& food) const {
 	return m_collision.collidesCircle(food.getCollision());
 }
-bool Meep::collidePoint(float x, float y) const {
+bool Meep::isCollisionPoint(float x, float y) const {
 	return m_collision.collidesPoint(x, y);
 }
 bool Meep::eatFood(Food& food, float dt) {
@@ -216,17 +223,17 @@ bool Meep::eatFood(Food& food, float dt) {
 	}
 	return false;
 }
-std::vector<unsigned int> Meep::collideFood(std::map<unsigned int, Food>& foods, float dt) {
+std::vector<unsigned int> Meep::collideFood(std::map<unsigned int, Food*>& foods, float dt) {
 	std::vector<unsigned int> collision_food_ids;
 	bool eating = false;
 	for (auto& [food_id, food] : foods) {
-		if (collideFood(food)) {
+		if (isCollisionFood(*food)) {
 			//collision_food_ids.push_back(food_id);
-			if(eatFood(food, dt)){
+			if(eatFood(*food, dt)){
 				eating = true;
 			}
-			if (food.isFinished()) {
-				delete m_target_food;
+			if (food->isFinished()) {
+				setNoTarget();
 				collision_food_ids.push_back(food_id);
 			}
 		}
@@ -238,12 +245,65 @@ std::vector<unsigned int> Meep::collideFood(std::map<unsigned int, Food>& foods,
 	return collision_food_ids;
 }
 
+void Meep::setTargetFood(Meep& meep, std::map<unsigned int, Food*>& foods) {
+	if (meep.getState() == MeepState::LookingForFood) {
+		std::optional<Food> closest = meep.getClosestFood(foods);
+		if (closest.has_value()) {
+			Food closest_food = closest.value();
+			float dx = closest_food.getX() - meep.m_position.x;
+			float dy = closest_food.getY() - meep.m_position.y;
+			float dist_sq = meep.getDistanceSquaredTo(closest_food.getX(), closest_food.getY());
+			float size = meep.getSize();
+			if (dist_sq > size*size) {
+				meep.setTarget(closest_food.getX(), closest_food.getY());
+				reserved_food.insert(closest_food.getId());
+				meep.m_state = MeepState::MovingToFood;
+			}
+		}
+	}
+}
+
+std::optional<Food> Meep::getClosestFood(std::map<unsigned int, Food*>& foods) {
+	float closest = sense_radius * sense_radius;
+	std::optional<Food> closest_food = std::nullopt;
+	std::map<unsigned int, Food*>::iterator it;
+	for (it = foods.begin(); it != foods.end(); it++) {
+		Food* food = it->second;
+		if (reserved_food.find(food->getId()) == reserved_food.end()) {
+			float distance = getDistanceSquaredTo(food->getX(), food->getY());
+			if (distance < closest) {
+				closest = distance;
+				closest_food = *food;
+			}
+		}
+	}
+	return closest_food;
+}
+
 void Meep::move(float mx, float my) {
-	m_x += mx; m_y += my;
-	m_collision.moveTo(m_x, m_y);
+	Entity2D::move(mx, my);
+	m_collision.moveTo(getX(), getY());
 }
 
 void Meep::setSize(float size) {
 	m_size = size;
 	m_collision.setRadius(m_size);
+}
+
+void Meep::setTarget(float x, float y) {
+	if(m_target != nullptr) delete m_target;
+	m_target = new MapPosition(x, y);
+}
+
+void Meep::setNoTarget() {
+	delete m_target;
+	m_target = nullptr;
+}
+
+std::string meepStateToString(MeepState state) {
+	switch (state) {
+	case MeepState::MovingToFood:
+		return "Moving to food";
+	}
+	return "";
 }

@@ -79,8 +79,8 @@
     <LibraryPath>D:\Coding\C++\Libs;D:\Coding\C++\Libs\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(IncludePath);D:\Coding\C++\Include</IncludePath>
-    <LibraryPath>D:\Coding\C++\Libs;D:\Coding\C++\Libs\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath);D:\Coding\C++\Include;C:\Users\aaroq\Documents\Code\C++\Include</IncludePath>
+    <LibraryPath>D:\Coding\C++\Libs;D:\Coding\C++\Libs\x64;C:\Users\aaroq\Documents\Code\C++\Libs\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(IncludePath);D:\Coding\C++\Include</IncludePath>
@@ -137,6 +137,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -144,7 +145,7 @@
       <AdditionalDependencies>glfw3.lib;opengl32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y /d "D:\Coding\C++\DLLs" "$(OutDir)"</Command>
+      <Command>xcopy /y /d "C:\Users\aaroq\Documents\Code\C++\DLLs" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -172,9 +173,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\engine\engine.cpp" />
+    <ClCompile Include="src\engine\grid_engine.cpp" />
+    <ClCompile Include="src\engine\test.cpp" />
+    <ClCompile Include="src\engine\test_renderer.cpp" />
+    <ClCompile Include="src\math\distances.cpp" />
+    <ClCompile Include="src\math\geometry.cpp" />
+    <ClCompile Include="src\math\map.cpp" />
+    <ClCompile Include="src\math\matrix.cpp" />
+    <ClCompile Include="src\math\vector2d.cpp" />
+    <ClCompile Include="src\meep\entity.cpp" />
     <ClCompile Include="src\meep\food.cpp" />
     <ClCompile Include="src\meep\meep.cpp" />
+    <ClCompile Include="src\shaders\custom\circle.cpp" />
     <ClCompile Include="src\shapes\circle.cpp" />
+    <ClCompile Include="src\shapes\line.cpp" />
     <ClCompile Include="src\shapes\quad.cpp" />
     <ClCompile Include="src\shapes\triangle.cpp" />
     <ClCompile Include="src\classes\status_bar.cpp" />
@@ -185,13 +197,27 @@
     <ClCompile Include="src\shaders\library.cpp" />
     <ClCompile Include="src\shaders\shader.cpp" />
     <ClCompile Include="src\text\text.cpp" />
+    <ClCompile Include="src\text\text_input.cpp" />
+    <ClCompile Include="src\ui_elements\button.cpp" />
     <ClCompile Include="src\utils\colour.cpp" />
     <ClCompile Include="src\window\interface_window.cpp" />
     <ClCompile Include="src\window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\containers\search.hpp" />
+    <ClInclude Include="src\debug\prints.hpp" />
+    <ClInclude Include="src\engine\coordinate.hpp" />
+    <ClInclude Include="src\engine\general_engines.hpp" />
+    <ClInclude Include="src\engine\grid_engine.hpp" />
+    <ClInclude Include="src\engine\test.hpp" />
+    <ClInclude Include="src\engine\test_renderer.hpp" />
     <ClInclude Include="src\math\distances.hpp" />
+    <ClInclude Include="src\math\geometry.hpp" />
     <ClInclude Include="src\math\map.hpp" />
+    <ClInclude Include="src\math\matrix.hpp" />
+    <ClInclude Include="src\math\vector2d.hpp" />
+    <ClInclude Include="src\shaders\custom.hpp" />
+    <ClInclude Include="src\shaders\custom\circle.hpp" />
     <ClInclude Include="src\shapes\circle.hpp" />
     <ClInclude Include="src\engine\engine.hpp" />
     <ClInclude Include="src\meep\entity.hpp" />
@@ -200,10 +226,14 @@
     <ClInclude Include="src\math\random.hpp" />
     <ClInclude Include="src\engine\renderer.hpp" />
     <ClInclude Include="src\shapes\general.hpp" />
+    <ClInclude Include="src\shapes\line.hpp" />
     <ClInclude Include="src\shapes\rectangle.hpp" />
     <ClInclude Include="src\shapes\shapes.hpp" />
     <ClInclude Include="src\shapes\quad.hpp" />
     <ClInclude Include="src\classes\status_bar.hpp" />
+    <ClInclude Include="src\text\parse.hpp" />
+    <ClInclude Include="src\text\text_input.hpp" />
+    <ClInclude Include="src\ui_elements\button.hpp" />
     <ClInclude Include="src\utils\timer.hpp" />
     <ClInclude Include="src\shapes\triangle.hpp" />
     <ClInclude Include="src\externals\ft2build.h" />
@@ -218,6 +248,8 @@
   <ItemGroup>
     <None Include="src\shaders\fragment\basic_phong.frag" />
     <None Include="src\shaders\fragment\circle.frag" />
+    <None Include="src\shaders\fragment\circle\outline_circle.frag" />
+    <None Include="src\shaders\fragment\circle\solid_circle_tile.frag" />
     <None Include="src\shaders\fragment\colour.frag" />
     <None Include="src\shaders\fragment\food_fragment.frag" />
     <None Include="src\shaders\fragment\green_red_gradient.frag" />
@@ -234,6 +266,7 @@
     <None Include="src\shaders\fragment\outline.frag" />
     <None Include="src\shaders\vertex\coordinate_2d.vert" />
     <None Include="src\shaders\vertex\full_screen.vert" />
+    <None Include="src\shaders\vertex\mvp.vert" />
     <None Include="src\shaders\vertex\transformation.vert" />
     <None Include="src\text\shaders\text.frag" />
     <None Include="src\text\shaders\text.vert" />

@@ -2,7 +2,9 @@
 
 
 
-Window::Window() : m_window(nullptr), m_engine(nullptr), m_dimensions(0, 0){};
+Window::Window() : m_window(nullptr), m_engine(nullptr), m_dimensions(0, 0),
+m_current_frame_time(0), m_last_frame_time(0), m_delta_time(0),
+m_frame_time(0.0166) {};
 
 bool Window::create(Dimensions dims, const char* title) {
     return create(dims.width, dims.height, title);
@@ -71,6 +73,18 @@ void Window::useMouseMoveCallback() {
     glfwSetCursorPosCallback(m_window, mouseMoveCallback);
 }
 
+void Window::useMouseButtonCallback() {
+    glfwSetMouseButtonCallback(m_window, mouseButtonCallback);
+}
+
+void Window::useKeyCallback() {
+    glfwSetKeyCallback(m_window, keyCallback);
+}
+
+void Window::useCharacterCallback() {
+    glfwSetCharCallback(m_window, characterCallback);
+}
+
 int Window::getKey(int k) const{
     return glfwGetKey(m_window, k);
 }
@@ -96,13 +110,39 @@ void Window::loop(void (*func)()) {
 void Window::loop(std::function<void()> func) {
     if (m_window) {
         while (!glfwWindowShouldClose(m_window)) {
+            m_current_frame_time = static_cast<float>(glfwGetTime());
+            m_delta_time = m_current_frame_time - m_last_frame_time;
+            m_last_frame_time = m_current_frame_time;
+            
             func();
             glfwSwapBuffers(m_window);
             glfwPollEvents();
+
+            float end_process_time = static_cast<float>(glfwGetTime()) - m_current_frame_time;
+            float resting_time = m_frame_time - end_process_time;
+            if (resting_time > 0) {
+                int end_milliseconds = resting_time*1000;
+                std::this_thread::sleep_for(std::chrono::milliseconds(end_milliseconds));
+            }
+            else {
+                //less than target time
+                std::cout << "Losing frames" << std::endl;
+            }
         }
     }
 }
 
+void Window::setFPS(unsigned int fps) {
+    m_frame_time = (0.5f/static_cast<float>(fps));
+}
+
+float Window::getDeltaTime() const {
+    return m_delta_time;
+}
+
+float Window::getCurrentTime() const {
+    return m_current_frame_time;
+}
 
 void Window::mouseMoveCallback(GLFWwindow* window, double winX, double winY) {
     Window* handler = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
@@ -112,5 +152,38 @@ void Window::mouseMoveCallback(GLFWwindow* window, double winX, double winY) {
     }
     else {
         std::cout << "Engine not set" << std::endl;
+    }
+}
+
+void Window::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    Window* handler = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+    BaseEngine* engine = handler->getEngine();
+    if (engine != nullptr) {
+        engine->onMouseButton(button, action, mods);
+    }
+    else {
+        std::cout << "Engine not set" << std::endl;
+    }
+}
+
+void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    Window* handler = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+    BaseEngine* engine = handler->getEngine();
+    if (engine != nullptr) {
+        engine->onKey(key, scancode, action, mods);
+    }
+    else {
+        std::cout << "Engine not set for key callback" << std::endl;
+    }
+}
+
+void Window::characterCallback(GLFWwindow* window, unsigned int codepoint) {
+    Window* handler = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+    BaseEngine* engine = handler->getEngine();
+    if(engine != nullptr) {
+        engine->onChar(codepoint);
+    }
+    else {
+        std::cout << "Engine not set for char callback" << std::endl;
     }
 }

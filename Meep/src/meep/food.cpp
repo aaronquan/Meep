@@ -35,5 +35,5 @@ bool Food::isFinished() const {
 }
 
 CollisionCircle Food::getCollision() const {
-	return CollisionCircle(m_x, m_y, getSize());
+	return CollisionCircle(getX(), getY(), getSize());
 }

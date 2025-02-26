@@ -52,7 +52,7 @@ namespace Shader {
 		void setVec2(const char* name, glm::vec2 v) const;
 		void setVec3(const char* name, glm::vec3 v) const;
 		void setVec4(const char* name, glm::vec4 v) const;
-		void setMat4(const char* name, glm::mat4 m) const;
+		void setMat4(const char* name, const glm::mat4& m) const;
 
 	private:
 		GLint getUniform(const char* name) const {

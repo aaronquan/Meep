@@ -12,6 +12,10 @@ Shader::VertexShader generateVertexShader(std::string vertex_source_file);
 
 Shader::FragmentShader generateFragmentShader(std::string frag_source_file);
 
+Shader::VertexShader generateVertexShaderFromPath(std::string path);
+
+Shader::FragmentShader generateFragmentShaderFromPath(std::string path);
+
 /*
 class VertexTransformationShader : public Shader::VertexShader  {
 public:
@@ -80,7 +84,7 @@ public:
 	TransformShader();
 	std::string getShaderName() const;
 	void setup();
-	void setTransform(glm::mat4 mat);
+	void setTransform(const glm::mat4 mat);
 private:
 	static std::optional<Shader::VertexShader> m_transform_shader;
 };
@@ -90,11 +94,21 @@ public:
 	CoordinateShader();
 	std::string getShaderName() const;
 	void setup();
-	void setModel(glm::mat4& mat);
-	void setView(glm::mat4& mat);
-	void setProjection(glm::mat4& mat);
+	void setModel(const glm::mat4& mat);
+	void setView(const glm::mat4& mat);
+	void setProjection(const glm::mat4& mat);
 private:
 	static std::optional<Shader::VertexShader> m_coordinate_shader;
+};
+
+class MVPShader : public LibraryShader {
+public:
+	MVPShader();
+	std::string getShaderName() const;
+	void setup();
+	void setMVP(const glm::mat4& mat);
+private:
+	static std::optional<Shader::VertexShader> m_mvp_shader;
 };
 
 /*

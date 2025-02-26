@@ -18,6 +18,8 @@ vec3 getColour();
 void main(){
     float circ = circle(position, 1.0);
     vec3 colour = getColour()*circ;
+    if(circ < 0.1)
+        discard;
 	FragColor = vec4(vec3(colour), circ);
 }
 

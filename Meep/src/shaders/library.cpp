@@ -22,6 +22,24 @@ Shader::FragmentShader generateFragmentShader(std::string frag_source_file) {
 	return opt_fs.value();
 }
 
+Shader::VertexShader generateVertexShaderFromPath(std::string path) {
+	std::optional<Shader::VertexShader> opt_fs = Shader::createVertexShaderFromFile(path.c_str());
+	if (!opt_fs.has_value()) {
+		std::cout << "VertexShader failed compilation: " << path << std::endl;
+		return Shader::VertexShader();
+	}
+	return opt_fs.value();
+}
+
+Shader::FragmentShader generateFragmentShaderFromPath(std::string path) {
+	std::optional<Shader::FragmentShader> opt_fs = Shader::createFragmentShaderFromFile(path.c_str());
+	if (!opt_fs.has_value()) {
+		std::cout << "FragmentShader failed compilation: " << path << std::endl;
+		return Shader::FragmentShader();
+	}
+	return opt_fs.value();
+}
+
 LibraryShader::LibraryShader(): m_shader(), m_is_setup(false){};
 
 bool LibraryShader::isLinked() const {
@@ -64,7 +82,6 @@ bool LibraryShader::addFragmentShader(Shader::FragmentShader& fs) {
 		std::cout << "Error: cannot add fragment shader to " << getShaderName() << ", already linked" << std::endl;
 		return false;
 	}
-
 	m_shader.addFragment(fs);
 	return true;
 }
@@ -139,7 +156,7 @@ void TransformShader::setup() {
 	m_shader.addVertex(m_transform_shader.value());
 }
 
-void TransformShader::setTransform(glm::mat4 mat) {
+void TransformShader::setTransform(const glm::mat4 mat) {
 	m_shader.setMat4("transform", mat);
 }
 
@@ -158,16 +175,34 @@ void CoordinateShader::setup() {
 	m_shader.addVertex(m_coordinate_shader.value());
 }
 
-void CoordinateShader::setModel(glm::mat4& mat) {
+void CoordinateShader::setModel(const glm::mat4& mat) {
 	m_shader.setMat4("model", mat);
 }
 
-void CoordinateShader::setView(glm::mat4& mat) {
+void CoordinateShader::setView(const glm::mat4& mat) {
 	m_shader.setMat4("view", mat);
 }
 
-void CoordinateShader::setProjection(glm::mat4& mat) {
+void CoordinateShader::setProjection(const glm::mat4& mat) {
 	m_shader.setMat4("projection", mat);
+}
+
+std::optional<Shader::VertexShader> MVPShader::m_mvp_shader = std::nullopt;
+
+MVPShader::MVPShader() : LibraryShader() {};
+
+std::string MVPShader::getShaderName() const {
+	return "MVP Shader";
+}
+
+void MVPShader::setup() {
+	if (!m_mvp_shader.has_value()) {
+		m_mvp_shader = generateVertexShader("mvp.vert");
+	}
+	m_shader.addVertex(m_mvp_shader.value());
+}
+void MVPShader::setMVP(const glm::mat4& mat) {
+	m_shader.setMat4("mvp", mat);
 }
 
 /*

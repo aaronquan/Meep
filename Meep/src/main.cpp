@@ -6,6 +6,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
+#include <thread>
+#include <chrono>
 
 //#include "shaders/shader.hpp"
 #include "engine/engine.hpp"
@@ -13,10 +15,13 @@
 
 #include "text/text.hpp"
 
+#include "text/text_input.hpp"
+
 #include <ft2build.h>
 #include FT_FREETYPE_H  
 
 #include "window/window.hpp"
+#include "./shaders/custom.hpp"
 
 
 const unsigned int SCR_WIDTH = 800;
@@ -39,37 +44,54 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) {
 }
 
 int main() {
-    Window window;
+    Window window; // must call all glm functions after initialising window
     window.create(AppEngine::s_window_dimensions, "Meep");
     window.useDefaultSizeCallback();
 
     DrawText::setup(AppEngine::s_window_dimensions.width, AppEngine::s_window_dimensions.height);
+    TextInput::setWindow(AppEngine::s_window_dimensions.width, AppEngine::s_window_dimensions.height);
 
     glEnable(GL_BLEND);
 
     //glEnable(GL_DEPTH_TEST);
-    //glDepthFunc(GL_LESS);
+    //glDepthFunc(GL_);
 
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
 
     AppEngine engine;
     window.setEngine(&engine);
     window.useMouseMoveCallback();
+    window.useMouseButtonCallback();
+    window.useKeyCallback();
+    //window.useCharacterCallback(); //text input in the form of a stream of Unicode code points 
+
+    window.setFPS(200);
 
     AppRenderer renderer;
 
-    float deltaTime = 0.0f;	// time between current frame and last frame
-    float lastFrame = 0.0f;
+    //float deltaTime = 0.0f;	// time between current frame and last frame
+    //float lastFrame = 0.0f;
+
+    /*
+    ShaderLibrary::CoordinateShader c;
+    Shader::FragmentShader circle = ShaderLibrary::generateFragmentShader("colour.frag");
+    c.addFragmentShader(circle);
+    c.use();
+    glm::mat4 identity(1.0f);
+    c.setModel(identity);
+    c.setView(identity);
+    c.setProjection(identity);
+    */
 
     window.loop([&]() {
-        float currentFrame = static_cast<float>(glfwGetTime());
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        //float currentFrame = static_cast<float>(glfwGetTime());
+        //deltaTime = currentFrame - lastFrame;
+        //lastFrame = currentFrame;
+        float dt = window.getDeltaTime();
+        glClearColor(0.2f, 0.3f, 0.3f, 0.3f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        engine.update(deltaTime);
+        engine.update(dt);
         renderer.renderEngine(engine);
     });
     /*

@@ -7,8 +7,14 @@
 #include <vector>
 #include <iostream> // debugging
 
+#include "../math/vector2d.hpp"
+#include "../math/map.hpp"
+
 #include "../shaders/shader.hpp"
 #include "general.hpp"
+//#include "line.hpp"
+
+#include "../utils/colour.hpp"
 
 class QuadCircle : public DrawShape2D {
 public:
@@ -31,15 +37,44 @@ private:
 	static unsigned int point_count;
 };
 
+enum class CircleCollisionType {
+	NoCollision, Inside, Touching, Equals, Intersecting
+};
+
+class CollisionCircle;
+
+struct CircleToCircleCollisionDetails {
+	float distance;
+	float distance_squared;
+	Vector2D direction;
+	CircleCollisionType type;
+	const CollisionCircle* circle1;
+	const CollisionCircle* circle2;
+	CircleToCircleCollisionDetails(): 
+		circle1(nullptr), circle2(nullptr),
+		distance(0), distance_squared(0), 
+		direction(Vector2D()), type(CircleCollisionType::NoCollision) 
+	{};
+};
+
 
 class CollisionCircle {
 public:
 	CollisionCircle();
 	CollisionCircle(float x, float y, float rad);
 	bool collidesPoint(float x, float y) const;
-	bool collidesCircle(CollisionCircle circle) const;
+	bool collidesCircle(const CollisionCircle& circle) const;
+	const CircleToCircleCollisionDetails collidesCircleDetails(const CollisionCircle& circle) const;
 	void moveTo(float x, float y);
 	void setRadius(float r);
+
+	float getX() const;
+	float getY() const;
+	float getRadius() const;
+
+	static bool isCollision(const CollisionCircle& c1, const CollisionCircle& c2);
+	static const CircleToCircleCollisionDetails collisionCircleDetails(const CollisionCircle& c1, const CollisionCircle& c2);
+	static std::vector<MapPosition> collisionCirclePoints(const CircleToCircleCollisionDetails& details);
 
 private:
 	float m_x;

@@ -46,6 +46,7 @@ void Quad::setup() {
     glEnableVertexAttribArray(1);
 
     s_is_ready = true;
+    //std::cout << "setup quad" << std::endl;
 }
 
 void Quad::clean() {
@@ -53,4 +54,42 @@ void Quad::clean() {
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
     s_is_ready = false;
+}
+
+CollisionRect::CollisionRect(): CollisionRect(0,0,1,1) {};
+
+CollisionRect::CollisionRect(float x, float y, float width, float height) : 
+    m_left(x), m_top(y), 
+    m_right(x+width), m_bottom(y+height){};
+
+CollisionRect CollisionRect::fromRectBound(const RectBound& rect_bound) {
+    return CollisionRect(rect_bound.left, rect_bound.top, rect_bound.getWidth(), rect_bound.getHeight());
+}
+
+bool CollisionRect::isCollisionPoint(float x, float y) const {
+    return isInsideX(x) && isInsideY(y);
+}
+
+bool CollisionRect::isInsideX(float x) const {
+    return x >= m_left && x <= m_right;
+}
+
+bool CollisionRect::isInsideY(float y) const {
+    return y >= m_top && y <= m_bottom;
+}
+
+float CollisionRect::getLeft() const {
+    return m_left;
+}
+
+float CollisionRect::getTop() const {
+    return m_top;
+}
+
+float CollisionRect::getRight() const {
+    return m_right;
+}
+
+float CollisionRect::getBottom() const {
+    return m_bottom;
 }

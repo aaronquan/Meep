@@ -1,8 +1,11 @@
 #pragma once
-
+#include "vector2d.hpp"
 struct MapPosition {
 	float x;
 	float y;
-	MapPosition() : MapPosition(0, 0) {};
-	MapPosition(float _x, float _y) : x(_x), y(_y) {};
+	MapPosition();
+	MapPosition(float _x, float _y);
+	bool isEqual(float _x, float _y) const;
 };
+
+MapPosition operator+(const MapPosition& mp, const Vector2D& v);
